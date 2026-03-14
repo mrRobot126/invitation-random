@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Most Curious Invitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IM+Fell+English:ital@0;1&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink: #1c1510; --paper: #f5f0e4; --paper-dark: #ece5d0;
+  --gold: #8b6914; --gold-light: #c9a550; --red: #8b1a1a;
+  --muted: #7a7060; --faint: #b8ae98;
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180,165,130,0.07) 28px, rgba(180,165,130,0.07) 29px); pointer-events: none; z-index: 0; }
+
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.active { display: block; }
+#landing { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem 2rem; }
+#landing.active { display: flex; }
+
+.rule-double { border: none; height: 5px; border-top: 1.5px solid var(--gold); border-bottom: 0.5px solid var(--gold); margin: 1.25rem 0; opacity: 0.3; }
+
+.stamp-box { display: inline-block; border: 1.5px solid var(--red); padding: 4px 14px; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--red); margin-bottom: 2.5rem; transform: rotate(-1deg); }
+.landing-chapter { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--faint); margin-bottom: 1rem; }
+.landing-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.6rem, 9vw, 4.8rem); font-weight: 300; line-height: 1.08; margin-bottom: 0.5rem; }
+.landing-title em { font-style: italic; color: var(--gold); }
+.landing-ornament { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); opacity: 0.6; margin: 0.5rem 0 1.5rem; }
+.landing-body { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 300; font-style: italic; color: var(--muted); line-height: 1.85; max-width: 340px; margin: 0 auto 2.5rem; }
+.open-btn { font-family: 'DM Sans', sans-serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--paper); background: var(--ink); border: none; padding: 16px 40px; cursor: pointer; transition: background 0.2s; }
+.open-btn:hover { background: var(--gold); }
+.landing-footnote { margin-top: 2rem; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.85rem; color: var(--faint); line-height: 1.7; }
+
+.inner { max-width: 560px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+.sel-header { text-align: center; margin-bottom: 2rem; }
+.chapter-label { font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.5rem; }
+.sel-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.9rem, 6vw, 2.8rem); font-weight: 300; line-height: 1.1; }
+.sel-title em { font-style: italic; color: var(--gold); }
+.sel-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--muted); margin-top: 0.5rem; }
+.ornament { text-align: center; color: var(--gold); font-size: 18px; letter-spacing: 0.3em; margin: 1rem 0; opacity: 0.5; }
+
+.card { border: none; border-top: 0.5px solid rgba(139,105,20,0.25); padding: 1.4rem 0.5rem; cursor: pointer; display: flex; align-items: flex-start; gap: 1.1rem; width: 100%; text-align: left; background: transparent; transition: background 0.2s; }
+.card:last-child { border-bottom: 0.5px solid rgba(139,105,20,0.25); }
+.card:hover { background: rgba(139,105,20,0.04); }
+.card-num-block { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: rgba(139,105,20,0.2); line-height: 1; min-width: 42px; padding-top: 3px; transition: color 0.2s; }
+.card:hover .card-num-block { color: var(--gold-light); }
+.card-body { flex: 1; }
+.card-code { font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.25rem; }
+.card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--ink); margin-bottom: 0.3rem; line-height: 1.2; }
+.card-vibe { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.92rem; color: var(--muted); }
+.card-arrow { font-size: 22px; color: var(--faint); align-self: center; transition: color 0.2s, transform 0.2s; }
+.card:hover .card-arrow { color: var(--gold); transform: translateX(4px); }
+
+.brief-inner { max-width: 520px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.back-btn { background: none; border: none; cursor: pointer; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); display: flex; align-items: center; gap: 6px; padding: 0; margin-bottom: 2rem; transition: color 0.2s; font-family: 'DM Sans', sans-serif; }
+.back-btn:hover { color: var(--gold); }
+.brief-chapter { font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.5rem; }
+.brief-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 7vw, 3rem); font-weight: 300; line-height: 1.05; margin-bottom: 0.5rem; }
+.brief-title em { font-style: italic; color: var(--gold); }
+.brief-tag { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.75rem; display: block; }
+.phase-block { margin-bottom: 1.75rem; padding-left: 1rem; border-left: 1.5px solid rgba(139,105,20,0.25); }
+.phase-label { font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.4rem; }
+.phase-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--ink); margin-bottom: 0.5rem; }
+.phase-desc { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 300; font-style: italic; color: var(--muted); line-height: 1.8; }
+.phase-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 0.75rem; }
+.plink { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); text-decoration: none; border-bottom: 0.5px solid rgba(139,105,20,0.3); padding-bottom: 2px; font-family: 'DM Sans', sans-serif; }
+.then-connector { display: flex; align-items: center; gap: 10px; margin: 1.5rem 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.85rem; color: var(--faint); }
+.then-connector::before, .then-connector::after { content: ''; flex: 1; height: 0.5px; background: rgba(139,105,20,0.2); }
+.closer-wrap { margin-top: 2rem; padding: 1.75rem; background: var(--paper-dark); border: 0.5px solid rgba(139,105,20,0.2); position: relative; }
+.closer-wrap::before { content: '❧'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--paper-dark); padding: 0 8px; font-size: 18px; color: var(--gold); opacity: 0.6; }
+.closer-quote { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.05rem; font-weight: 300; color: var(--ink); line-height: 1.85; margin-bottom: 1.5rem; text-align: center; }
+.sig-block { text-align: right; }
+.sig-dash { font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; color: var(--faint); margin-bottom: 0.2rem; }
+.sig-name { font-family: 'IM Fell English', serif; font-style: italic; font-size: 1.5rem; color: var(--gold); }
+.sig-title { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); margin-top: 0.2rem; font-family: 'DM Sans', sans-serif; }
+.brief-footer { margin-top: 1.75rem; text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.82rem; color: var(--faint); }
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <span class="stamp-box">Strictly Private &amp; Confidential</span>
+  <p class="landing-chapter">A most unexpected invitation</p>
+  <h1 class="landing-title">The Case of the<br><em>Missing Evening Plan</em></h1>
+  <div class="landing-ornament">— ✦ —</div>
+  <p class="landing-body">A curious document has found its way to you.<br>Within it: four evenings. Four possibilities.<br>One, I hope, that suits you rather well.</p>
+  <button class="open-btn" onclick="goTo('select')">Open the dossier</button>
+  <p class="landing-footnote">"The impossible could not have happened,<br>therefore the impossible must be possible in some way." — A.C.</p>
+</div>
+
+<!-- SELECT -->
+<div id="select" class="screen">
+  <div class="inner">
+    <button class="back-btn" onclick="goTo('landing')">← Back</button>
+    <div class="sel-header">
+      <p class="chapter-label">Your dossier — four suspects</p>
+      <div class="rule-double"></div>
+      <h2 class="sel-title">Which evening<br>is <em>your alibi?</em></h2>
+      <p class="sel-sub">Study each carefully. The right one will reveal itself.</p>
+      <div class="ornament">· · ·</div>
+    </div>
+    <div>
+      <div class="card" onclick="goTo('brief0')">
+        <div class="card-num-block">I</div>
+        <div class="card-body">
+          <p class="card-code">Operation — Hole in One</p>
+          <p class="card-name">The Indiranagar Affair</p>
+          <p class="card-vibe">A study in friendly rivalry</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card" onclick="goTo('brief1')">
+        <div class="card-num-block">II</div>
+        <div class="card-body">
+          <p class="card-code">Operation — Respawn</p>
+          <p class="card-name">The Adventure of the Arcade</p>
+          <p class="card-vibe">Childhood revisited, adulthood optional</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card" onclick="goTo('brief2')">
+        <div class="card-num-block">III</div>
+        <div class="card-body">
+          <p class="card-code">Operation — Scenic Route</p>
+          <p class="card-name">The Mystery of Cubbon Park</p>
+          <p class="card-vibe">Unhurried, lovely, rather good for the soul</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+      <div class="card" onclick="goTo('brief3')">
+        <div class="card-num-block">IV</div>
+        <div class="card-body">
+          <p class="card-code">Operation — No Agenda</p>
+          <p class="card-name">And Then There Were Plans</p>
+          <p class="card-vibe">Meet. See what unfolds. No overthinking.</p>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRIEF 0 -->
+<div id="brief0" class="screen">
+  <div class="brief-inner">
+    <button class="back-btn" onclick="goTo('select')">← Return to dossier</button>
+    <p class="brief-chapter">Case file I of IV</p>
+    <div class="rule-double"></div>
+    <h2 class="brief-title">The <em>Indiranagar Affair</em></h2>
+    <span class="brief-tag">Active · A Little Competitive · Entirely Enjoyable</span>
+    <div class="phase-block">
+      <p class="phase-label">Chapter One</p>
+      <p class="phase-name">Mini Golf — Indiranagar</p>
+      <p class="phase-desc">Our investigation begins on the green. Mini golf: just competitive enough to reveal true character, relaxed enough that losing is still charming. Expect windmill obstacles, at least one improbable shot, and the quiet revelation of who celebrates too early.</p>
+      <div class="phase-links"><a class="plink" href="https://www.district.in/events/mini-golf-madness-bengaluru-2025-buy-tickets" target="_blank">View the venue →</a></div>
+    </div>
+    <div class="then-connector">and then</div>
+    <div class="phase-block">
+      <p class="phase-label">Chapter Two</p>
+      <p class="phase-name">Dinner & Debrief — Indiranagar</p>
+      <p class="phase-desc">Indiranagar, being the sort of neighbourhood that never disappoints, offers ample opportunity for good food and better conversation. We settle in, order something worth talking about, and properly reconstruct the events of Chapter One.</p>
+    </div>
+    <div class="rule-double" style="margin-top:2rem"></div>
+    <div class="closer-wrap">
+      <p class="closer-quote">"Every great mystery needs a first scene. I have a hunch this one will be rather good."</p>
+      <div class="sig-block">
+        <p class="sig-dash">Yours, with considerable anticipation —</p>
+        <p class="sig-name">H. Poirot</p>
+        <p class="sig-title">The little grey cells await your reply</p>
+      </div>
+    </div>
+    <p class="brief-footer">🔍 Clue enclosed: a nine-iron and an open evening.</p>
+  </div>
+</div>
+
+<!-- BRIEF 1 -->
+<div id="brief1" class="screen">
+  <div class="brief-inner">
+    <button class="back-btn" onclick="goTo('select')">← Return to dossier</button>
+    <p class="brief-chapter">Case file II of IV</p>
+    <div class="rule-double"></div>
+    <h2 class="brief-title">The Adventure of the <em>Arcade</em></h2>
+    <span class="brief-tag">Playful · Nostalgic · Surprisingly Competitive</span>
+    <div class="phase-block">
+      <p class="phase-label">Chapter One</p>
+      <p class="phase-name">Play Arena — Bowling & Arcade Games</p>
+      <p class="phase-desc">We revisit the scene of childhood with suspicious enthusiasm. Bowling, air hockey, arcade machines that demand more from you than they should. The kind of evening where someone takes something far too seriously and neither of you minds at all.</p>
+      <div class="phase-links"><a class="plink" href="https://playarena.in/" target="_blank">View Play Arena →</a></div>
+    </div>
+    <div class="then-connector">and then</div>
+    <div class="phase-block">
+      <p class="phase-label">Chapter Two</p>
+      <p class="phase-name">Bier Library — Sarjapur</p>
+      <p class="phase-desc">The investigation concludes somewhere comfortable, with good atmosphere and no particular agenda. The sort of place Christie's characters retired to after a long day of uncovering things.</p>
+      <div class="phase-links"><a class="plink" href="https://www.zomato.com/bangalore/the-bier-library-sarjapur-road-bangalore" target="_blank">View the library →</a></div>
+    </div>
+    <div class="rule-double" style="margin-top:2rem"></div>
+    <div class="closer-wrap">
+      <p class="closer-quote">"I must confess: I take air hockey with a seriousness that borders on the dramatic."</p>
+      <div class="sig-block">
+        <p class="sig-dash">Yours, with considerable anticipation —</p>
+        <p class="sig-name">H. Poirot</p>
+        <p class="sig-title">The little grey cells await your reply</p>
+      </div>
+    </div>
+    <p class="brief-footer">🔍 Clue enclosed: a bowling shoe and absolutely no shame.</p>
+  </div>
+</div>
+
+<!-- BRIEF 2 -->
+<div id="brief2" class="screen">
+  <div class="brief-inner">
+    <button class="back-btn" onclick="goTo('select')">← Return to dossier</button>
+    <p class="brief-chapter">Case file III of IV</p>
+    <div class="rule-double"></div>
+    <h2 class="brief-title">The Mystery of <em>Cubbon Park</em></h2>
+    <span class="brief-tag">Slow · Easy · Genuinely Beautiful</span>
+    <div class="phase-block">
+      <p class="phase-label">Chapter One</p>
+      <p class="phase-name">Cubbon Park — Coffees & a Walk</p>
+      <p class="phase-desc">The scene: Bangalore's most absurdly pink park in full bloom. The method: coffees in hand, no itinerary, and the kind of walking conversation that goes somewhere entirely unexpected. Walking, it turns out, is excellent cover for getting to know someone properly.</p>
+      <div class="phase-links"><a class="plink" href="https://www.tripadvisor.in/Attraction_Review-g297628-d2587630-Reviews-Cubbon_Park-Bengaluru_Bangalore_District_Karnataka.html" target="_blank">About Cubbon Park →</a></div>
+    </div>
+    <div class="then-connector">and then</div>
+    <div class="phase-block">
+      <p class="phase-label">Chapter Two</p>
+      <p class="phase-name">Mexican at Comal — or Rooftop at Kai</p>
+      <p class="phase-desc">The denouement: your choice. Comal for a Mexican feast that requires no explanation. Or Kai on MG Road — rooftop, city below, the kind of setting that makes conversation feel important. The detective chooses.</p>
+      <div class="phase-links">
+        <a class="plink" href="https://www.comal.in/" target="_blank">Comal →</a>
+        <a class="plink" href="https://www.zomato.com/bangalore/kai-bar-and-kitchen-mg-road-bangalore" target="_blank">Kai →</a>
+      </div>
+    </div>
+    <div class="rule-double" style="margin-top:2rem"></div>
+    <div class="closer-wrap">
+      <p class="closer-quote">"The simplest cases are often the most satisfying. A walk. Good coffee. Nowhere to be. Elementary, really."</p>
+      <div class="sig-block">
+        <p class="sig-dash">Yours, with considerable anticipation —</p>
+        <p class="sig-name">H. Poirot</p>
+        <p class="sig-title">The little grey cells await your reply</p>
+      </div>
+    </div>
+    <p class="brief-footer">🔍 Clue enclosed: comfortable shoes and an open mind.</p>
+  </div>
+</div>
+
+<!-- BRIEF 3 -->
+<div id="brief3" class="screen">
+  <div class="brief-inner">
+    <button class="back-btn" onclick="goTo('select')">← Return to dossier</button>
+    <p class="brief-chapter">Case file IV of IV</p>
+    <div class="rule-double"></div>
+    <h2 class="brief-title"><em>And Then There Were Plans</em></h2>
+    <span class="brief-tag">Easy · Open-ended · Rather Spontaneous</span>
+    <div class="phase-block">
+      <p class="phase-label">The entire plot</p>
+      <p class="phase-name">Tropika or Fridah — your verdict</p>
+      <p class="phase-desc">Sometimes the most elegant solution is the simplest. Tropika in Marathahalli: tropical energy, the closest thing Bangalore has to Bali, effortlessly easy. Fridah by Bohemians: eclectic, warm, the kind of place with its own quiet personality. We meet. We settle in. The evening does the rest — as good evenings tend to.</p>
+      <div class="phase-links">
+        <a class="plink" href="https://www.zomato.com/bangalore/tropika-brewing-co-marathahalli-bangalore" target="_blank">Tropika →</a>
+        <a class="plink" href="https://www.zomato.com/bangalore/fridah-by-bohemians-mahadevapura-bangalore" target="_blank">Fridah →</a>
+      </div>
+    </div>
+    <div class="rule-double" style="margin-top:2rem"></div>
+    <div class="closer-wrap">
+      <p class="closer-quote">"The best mysteries are the ones you don't see coming. Low commitment. Open evening. Curious company."</p>
+      <div class="sig-block">
+        <p class="sig-dash">Yours, with considerable anticipation —</p>
+        <p class="sig-name">H. Poirot</p>
+        <p class="sig-title">The little grey cells await your reply</p>
+      </div>
+    </div>
+    <p class="brief-footer">🔍 Clue enclosed: an open evening and no particular expectations.</p>
+  </div>
+</div>
+
+<script>
+function goTo(id) {
+  var all = document.querySelectorAll('.screen');
+  for (var i = 0; i < all.length; i++) {
+    all[i].classList.remove('active');
+  }
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
